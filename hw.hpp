@@ -1,8 +1,8 @@
 /* 
- * File:   hw1.hpp
+ * File:   hw.hpp
  * Author: Jeremy Olsen & Chad Lewis
  *
- * Purpose: this file contains the functions for homework 1
+ * Purpose: this file contains the functions for homework 1 and homework 2
  * Created on September 12, 2016, 11:48 PM
  */
 

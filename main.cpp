@@ -1,5 +1,5 @@
 /*
- *File:     main_hw2.cpp
+ *File:     main.cpp
  *Author:   Jeremy Olsen & Chad Lewis
  *
  *Purpose:  This program serves to implement mod, mod-inverse, and RSA encryption/decryption.
