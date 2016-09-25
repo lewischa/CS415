@@ -18,6 +18,13 @@ struct quoRem {
     std::vector<int> r;
 };
 
+struct extEuclid {
+    std::vector<int> x;
+    std::vector<int> y;
+    std::vector<int> d;
+    int sign;
+};
+
 void print(std::vector<int> pMe){
     for(int i = 0; i < pMe.size(); i++){
         std::cout << pMe.at(i);
@@ -427,6 +434,65 @@ quoRem divide(std::vector<int> a, std::vector<int> b) {
     return res;
 }
 
+std::vector<int> mod(std::vector<int> a, std::vector<int> b) {
+    quoRem res;
+    
+    res = divide(a, b);
+    
+    return res.r;
+}
+
+
+extEuclid extendedEuclid(std::vector<int> a, std::vector<int> b) {
+    extEuclid temp;
+    
+    if (zero(b)) {
+        temp.x = dec2bin(1);
+        temp.y = dec2bin(0);
+        temp.d = a;
+        temp.sign = 0;
+        return temp;
+    }
+    
+    temp = extendedEuclid(b, mod(a, b));
+    extEuclid res;
+    quoRem q = divide(a,b);
+    std::vector<int> product = mult(q.q, temp.y);
+    res.x = temp.y;
+    
+    
+    if ( temp.sign == 0 ) {
+        // Both temp.x and temp.y are positive
+        res.y = subtract(temp.x, product);
+        if ( lessThan(temp.x, product) ) {
+            // Subtracting product from temp.x will return a negative value,
+            // so set the sign for res.y as negative
+            res.sign = 2;
+        }
+        else {
+            res.sign = 0;
+        }
+    }
+    else if ( temp.sign == 1 ) {
+        // temp.x has been returned as a negative value
+        // Since we do temp.x - (a/b)*temp.y, we can return
+        // temp.x + (a/b)*temp.y and set the sign to show that as a negative
+        res.y = add(temp.x, product);
+        res.sign = 2;
+    }
+    else {
+        // temp.y has been returned as a negative,
+        // so temp.x - (a/b)*temp.y can be returned as
+        // temp.x + (a/b)*temp.y
+        res.y = add(temp.x, product);
+        // Since we return temp.y as the first return value,
+        // set the sign to reflect that
+        res.sign = 1;
+    }
+    
+    res.d = temp.d;
+    return res;
+}
 
 
 std::vector<int> dec2bin(int n){

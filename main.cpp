@@ -1,99 +1,110 @@
-/* 
- * File:   main.cpp
- * Author: Jeremy Olsen & Chad Lewis
+/*
+ *File:     main_hw2.cpp
+ *Author:   Jeremy Olsen & Chad Lewis
  *
- * Purpose: This program takes in four integers from a user, converts those ints
- * into a binary representation and performs bit-level math.
- * 
- * Created on September 10, 2016, 2:45 PM
+ *Purpose:  This program serves to implement mod, mod-inverse, and RSA encryption/decryption.
+ *
+ *Created on September 24, 2016 13:55
  */
 
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include "hw1.hpp"
-//void problemThreeA(std::vector<int> &itVeect);
-//void problemThreeB(std::vector<int> &intVect);
-/*
- * 
- */
-int main(int argc, char** argv) {
-    int option;
-    
-    std::cout << "Choose option number:\n";
-    std::cout << "1. Problem3a\n";
-    std::cout << "2. Problem3b\n";
-    std::cout << "3. Quit program\n";
-    
-    std::cin >> option;
-    
-    while(option != 3){
-        std::vector<int> iArray;
-        std::vector<int> binArray[4];
-        int tempValue;
-        bool validInt = true;
-        
-        
-        if(option >= 1 && option <=3){
-            std::cout << "Enter 4 integer values where for each integer 0 < n < 1000: ";
-            for(int i = 0; i < 4; i++){
-                 std::cin >> tempValue;       
-                iArray.push_back(tempValue);
-                if(tempValue <= 0 || tempValue > 1000){
-                    validInt = false;
-                }
-            }
+#include "hw.hpp"
 
-            for(int i = 0; i < 4; i++){
-                binArray[i] = dec2bin(iArray.at(i));                
-            }
+void problem1_13();
+void modInverse();
+void printVector(std::vector<int> vec);
+void printBinary(std::vector<int> vec);
 
-            if(!validInt || iArray.size() != 4 ){
-                option = 0;
-            }
-        }
-        if(option == 1){
-          //(A^B - C^D)
-            if(lessThan(aPowerB(binArray[2], binArray[3]),
-                    aPowerB(binArray[0], binArray[1]))){
-                std::cout << Bin2Dec(subtract(aPowerB(binArray[0], binArray[1]),
-                        aPowerB(binArray[2], binArray[3])));
-                std::cout << std::endl;
-            }
-            else{
-                std::cout << '-';
-                std::cout << Bin2Dec(subtract(aPowerB(dec2bin(iArray[0]), dec2bin(iArray[1])),
-                        aPowerB(dec2bin(iArray[2]), dec2bin(iArray[3]))));
-                std::cout << std::endl;
-            }
-        }
-        else if(option == 2){
-            //(A^B/C^D)
-            quoRem res;
-            std::vector<int> ab = aPowerB(dec2bin(iArray[0]), dec2bin(iArray[1]));
-            std::vector<int> cd = aPowerB(dec2bin(iArray[2]), dec2bin(iArray[3]));
-//            print(ab);
-//            print(cd);
-            res = divide(ab, cd);
-//            std::cout << "res.q size " << res.q.size() << std::endl;
-            std::cout << "quotient = " << Bin2Dec(res.q) << std::endl;
-            std::cout << "remainder = " << Bin2Dec(res.r) << std::endl;
-        }
-        else if (option == 0){            
-            std::cout << "Invalid integers selected! Returning to option menu.\n";
-        }
-        else{
-            std::cout << "Invalid option chosen. Returning to option menu.\n";
-        }
-        
-        
-        std::cout << "Choose option number:\n";
-        std::cout << "1. Problem3a\n";
-        std::cout << "2. Problem3b\n";
-        std::cout << "3. Quit program\n";
-    
-        std::cin >> option;
-    }
-    return 0;
+
+int main() {
+    problem1_13();
+    modInverse();
 }
 
+void problem1_13() {
+    // Pre-condition: None
+    // Post-condition: True if (a ^ b) - (c ^ d) mod e == 0,
+    // false otherwise
+    
+    std::vector<int> iArray;
+    int temp;
+    
+    std::cout << std::endl << "Problem 1.13:" << std::endl;
+    std::cout << "Output:  True if (a ^ b) - (c ^ d) mod e == 0" << std::endl;
+    
+    std::cout << "Enter 5 integer values (a, b, c, d, and e) where n > 0: ";
+    for (int i = 0; i < 5; i++) {
+        std::cin >> temp;
+        while (temp <= 0) {
+            std::cout << "Value must be non-negative. Try again: ";
+            std::cin >> temp;
+        }
+        iArray.push_back(temp);
+    }
+    
+    quoRem res;
+    std::vector<int> ab = aPowerB(dec2bin(iArray[0]), dec2bin(iArray[1]));
+    std::vector<int> cd = aPowerB(dec2bin(iArray[2]), dec2bin(iArray[3]));
+    std::vector<int> sub = subtract(ab, cd);
+    std::vector<int> divisor = dec2bin(iArray[4]);
+    res = divide(sub, divisor);
+    if (Bin2Dec(res.r) == "0") {
+        std::cout << "True" << std::endl;
+        std::cout << "(" << iArray[0] << " ^ " << iArray[1] << ") - (" << iArray[2] << " ^ " << iArray[3] << ") mod " << iArray[4] << " == 0" << std::endl << std::endl;
+    }
+    else {
+        std::cout << "False" << std::endl;
+        std::cout << "(" << iArray[0] << " ^ " << iArray[1] << ") - (" << iArray[2] << " ^ " << iArray[3] << ") mod " << iArray[4] << " != 0" << std::endl << std::endl;
+    }
+}
+
+void modInverse() {
+    // Pre-condition: User must enter two positive integer values A,B
+    // Post-condition: Returns x, y, d such that Ax + By = d
+    int x;
+    std::vector<int> a;
+    std::vector<int> b;
+    extEuclid euclid;
+    
+    std::cout << "Enter a positive integer: ";
+    std::cin >> x;
+    a = dec2bin(x);
+    std::cout << "Enter another positive integer: ";
+    std::cin >> x;
+    b = dec2bin(x);
+    
+    euclid = extendedEuclid(a,b);
+    if ( euclid.sign == 0 ) {
+        // Both return values (euclid.x, euclid.y) are positive
+        std::cout << Bin2Dec(euclid.x) << std::endl;
+        std::cout << Bin2Dec(euclid.y) << std::endl;
+    }
+    else if ( euclid.sign == 1 ) {
+        // euclid.x is negative
+        std::cout << "-" << Bin2Dec(euclid.x) << std::endl;
+        std::cout << Bin2Dec(euclid.y) << std::endl;
+    }
+    else {
+        // euclid.y is negative
+        std::cout << Bin2Dec(euclid.x) << std::endl;
+        std::cout << "-" << Bin2Dec(euclid.y) << std::endl;
+    }
+    std::cout << Bin2Dec(euclid.d) << std::endl;
+}
+
+void printVector(std::vector<int> vec) {
+    std::cout << std::endl;
+    std::cout << "Now printing vector." << std::endl;
+    for (int i = 0; i < vec.size(); i++ ) {
+        std::cout << vec.at(i) << std::endl;
+    }
+}
+
+void printBinary(std::vector<int> vec) {
+    for (int i = 0; i < vec.size(); i++ ) {
+        std::cout << vec.at(i);
+    }
+    std::cout << std::endl;
+}
