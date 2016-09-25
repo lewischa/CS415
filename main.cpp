@@ -14,13 +14,16 @@
 
 void problem1_13();
 void modInverse();
+void Primality2();
 void printVector(std::vector<int> vec);
 void printBinary(std::vector<int> vec);
 
 
 int main() {
-    problem1_13();
-    modInverse();
+//    int option;
+//    problem1_13();
+//    modInverse();
+    Primality2();
 }
 
 void problem1_13() {
@@ -58,6 +61,7 @@ void problem1_13() {
         std::cout << "False" << std::endl;
         std::cout << "(" << iArray[0] << " ^ " << iArray[1] << ") - (" << iArray[2] << " ^ " << iArray[3] << ") mod " << iArray[4] << " != 0" << std::endl << std::endl;
     }
+    return;
 }
 
 void modInverse() {
@@ -92,6 +96,45 @@ void modInverse() {
         std::cout << "-" << Bin2Dec(euclid.y) << std::endl;
     }
     std::cout << Bin2Dec(euclid.d) << std::endl;
+    
+    return;
+}
+
+// Still needs some work to allow for larger inputs
+void Primality2() {
+    // Prompts the user for integers N and k
+    // N will be the number to test for primality,
+    // k is a confidence parameter that reduces probability
+    // of a false positive to below 1/(2^k)
+    
+    unsigned int N;
+    int k;
+    
+    std::cout << "Enter a positive integer N: ";
+    std::cin >> N;
+    std::cout << "Enter a confidence parameter (positive integer) k: ";
+    std::cin >> k;
+    
+    // Initialize random number generator
+    srand(time(NULL));
+    
+    // Array to hold decimal representations of all ai's
+    std::vector<unsigned int> aSubI;
+    
+    for (int i = 0; i < k; i++) {
+        unsigned int x = rand() % N + 1;
+        while ( x == 1 || x == N )
+            x = rand() % N + 1;
+        aSubI.push_back(x);
+    }
+    
+    bool result = primality2(dec2bin(N), dec2bin(k), aSubI);
+    if ( result )
+        std::cout << N << " is prime." << std::endl << std::endl;
+    else
+        std::cout << N << " is not prime." << std::endl << std::endl;
+    
+    return;
 }
 
 void printVector(std::vector<int> vec) {

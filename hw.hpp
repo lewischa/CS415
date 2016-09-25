@@ -12,6 +12,7 @@
 #include <vector>
 #include <math.h>
 #include <iostream>
+#include <time.h>
 
 struct quoRem {
     std::vector<int> q;
@@ -434,6 +435,59 @@ quoRem divide(std::vector<int> a, std::vector<int> b) {
     return res;
 }
 
+std::vector<int> dec2bin(int n){
+    
+    std::vector<int> result;
+    
+    while(n != 0){
+        result.push_back(n % 2);
+        n /= 2;
+    }
+    result = reverse(result);
+    return result;
+}
+
+//not finished
+std::vector<int> mult(std::vector<int> a, std::vector<int> b){
+    
+    if(lessThan(a, b) && !equal(a, b)){
+        return mult(b,a);
+    }
+    std::vector<int> multiply;
+    //    if(lessThan(b, a)){
+    while(!zero(b)){
+        
+        if(!even(b)){
+            std::vector<int> temp = multiply;
+            multiply = add(temp, a);
+        }
+        a = shiftLeft(a);
+        b = shiftRight(b);
+    }
+    
+    return multiply;
+    
+}
+
+std::vector<int> aPowerB(std::vector<int> a, std::vector<int> b){
+    if(zero(b)){
+        std::vector<int> one;
+        one.push_back(1);
+        return one;
+    }
+    std::vector<int> z;
+    z = aPowerB(a, shiftRight(b));
+    if(even(b)){
+        z = mult(z, z);
+        return z;
+    }
+    else{
+        z = mult(z, z);
+        z = mult(a, z);
+        return z;
+    }
+}
+
 std::vector<int> mod(std::vector<int> a, std::vector<int> b) {
     quoRem res;
     
@@ -494,60 +548,79 @@ extEuclid extendedEuclid(std::vector<int> a, std::vector<int> b) {
     return res;
 }
 
+std::vector<int> subtractOne(std::vector<int> vec) {
+    // Subtracts one from binary representation held in vec
+    
+    std::vector<int> temp;
+    temp.push_back(1);
+    
+    return subtract(vec, temp);
+}
 
-std::vector<int> dec2bin(int n){
+std::vector<int> trim(std::vector<int> vec) {
+    // Removes leading zeroes
+    vec = reverse(vec);
     
-    std::vector<int> result;
-    
-    while(n != 0){
-        result.push_back(n % 2);
-        n /= 2;
+    for (int i = vec.size() - 1; i > 0; i++) {
+        if (vec.at(i) == 0)
+            vec.pop_back();
     }
-    result = reverse(result);
-    return result;
+//    std::cout << "inside trim" << std::endl;
+    return vec;
+}
+
+bool isOne(std::vector<int> vec) {
+    // Returns true if vec == 1, false otherwise
+    
+    std::vector<int> one;
+    one.push_back(1);
+    
+//    std::cout << "inside isOne" << std::endl;
+//    return equal(trim(vec), one);
+    return equal(vec, one);
+}
+
+bool primality2(std::vector<int> N, std::vector<int> k, std::vector<unsigned int> aiVector) {
+    // Pre-condition: N is a positive integer, 1 <= k <= N
+    // Post-condition: Returns true if N is prime, false otherwise
+    
+    
+    
+    // This vector holds binary representations of all ai's
+    std::vector<std::vector<int> > aSubI;
+    // Convert decimal ai's to binary representation and load the vector
+    for (int i = 0; i < aiVector.size(); i++) {
+//        std::cout << "test" << std::endl;
+        aSubI.push_back(dec2bin(aiVector.at(i)));
+    }
+    
+    // ai ^ (N - 1)
+    std::vector<int> exponent;
+    
+    // ai ^ (N - 1) mod N
+    std::vector<int> modulus;
+    
+//    std::cout << "N - 1: " << Bin2Dec(subtractOne(N)) << std::endl;
+//    
+//    std::cout << "Printing ai's: ";
+//    for (int i = 0; i < aSubI.size(); i++) {
+//        std::cout << Bin2Dec(aSubI.at(i)) << ", ";
+//    }
+//    std::cout << std::endl;
+    
+    std::vector<int> nMinusOne = subtractOne(N);
+    
+    for (int i = 0; i < aSubI.size(); i++) {
+        exponent = aPowerB(aSubI.at(i), nMinusOne);
+        modulus = mod(exponent, N);
+//        std::cout << Bin2Dec(modulus) << std::endl;
+        if ( !isOne(modulus) ) return false;
+    }
+    return true;
 }
 
 
-//not finished
-std::vector<int> mult(std::vector<int> a, std::vector<int> b){
-    
-    if(lessThan(a, b) && !equal(a, b)){
-        return mult(b,a);
-    }
-    std::vector<int> multiply;
-//    if(lessThan(b, a)){
-        while(!zero(b)){
 
-            if(!even(b)){
-                std::vector<int> temp = multiply;
-                multiply = add(temp, a);
-            }
-            a = shiftLeft(a);
-            b = shiftRight(b);
-        }
-
-    return multiply;
-
-}
-
-std::vector<int> aPowerB(std::vector<int> a, std::vector<int> b){
-    if(zero(b)){
-        std::vector<int> one;
-        one.push_back(1);
-        return one;
-    }
-    std::vector<int> z;
-    z = aPowerB(a, shiftRight(b));
-    if(even(b)){
-        z = mult(z, z);
-        return z;
-    }
-    else{
-        z = mult(z, z);
-        z = mult(a, z);
-        return z;
-    }
-}
 
 
 
