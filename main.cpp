@@ -12,6 +12,8 @@
 #include <vector>
 #include "hw.hpp"
 
+int getOption();
+void runOption(int option);
 void problem1_13();
 void modInverse();
 void Primality2();
@@ -23,9 +25,49 @@ int main() {
 //    int option;
 //    problem1_13();
 //    modInverse();
-    Primality2();
+//    Primality2();
+    while (true) {
+        int option = getOption();
+        runOption(option);
+    }
 }
 
+int getOption() {
+    int option;
+    std::cout << "You may choose one of the following options: " << std::endl;
+    std::cout << "1.  Extended GCD" << std::endl;
+    std::cout << "2.  Primality Testing" << std::endl;
+    std::cout << "3.  RSA-key-generate" << std::endl;
+    std::cout << "4.  RSA-encrypt and RSA-decrypt" << std::endl;
+    std::cout << "5.  Quit" << std::endl;
+    std::cout << "Enter which option you would like to do: ";
+    std::cin >> option;
+    if (option == 5) exit(0);
+    while (option < 1 || option > 5 || std::cin.fail()) {
+        std::cout << "That is not a valid option. Try again: ";
+        std::cin >> option;
+    }
+    return option;
+}
+
+void runOption(int option) {
+    if (option == 1) {
+        modInverse();
+        return;
+    }
+    else if (option == 2) {
+        Primality2();
+        return;
+    }
+    else if (option == 3) {
+        std::cout << "Can't do that option yet." << std::endl;
+        return;
+    }
+    else {
+        std::cout << "Can't do that option yet." << std::endl;
+        return;
+    }
+}
 void problem1_13() {
     // Pre-condition: None
     // Post-condition: True if (a ^ b) - (c ^ d) mod e == 0,

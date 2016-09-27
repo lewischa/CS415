@@ -13,6 +13,7 @@
 #include <math.h>
 #include <iostream>
 #include <time.h>
+#include <string>
 
 struct quoRem {
     std::vector<int> q;
@@ -413,8 +414,6 @@ quoRem divide(std::vector<int> a, std::vector<int> b) {
     quoRem res;
     
     if ( zero(a) ) {
-        res.q;
-        res.r;
         return res;
     }
     
@@ -617,6 +616,131 @@ bool primality2(std::vector<int> N, std::vector<int> k, std::vector<unsigned int
         if ( !isOne(modulus) ) return false;
     }
     return true;
+}
+
+
+static std::vector<int> dec2bin1(char c){
+    // handles the case of single digit input. Ex: c = '5' produces output [1,0,1] etc.
+    std::vector<int> temp;
+    switch(c) {
+        case '0':
+            return temp;
+        case '1':
+            temp.push_back(1);
+            return temp;
+        case '2':
+            temp.push_back(0);
+            temp.push_back(1);
+            return temp;
+        case '3':
+            temp.push_back(1);
+            temp.push_back(1);
+            return temp;
+        case '4':
+            temp.push_back(0);
+            temp.push_back(0);
+            temp.push_back(1);
+            return temp;
+        case '5':
+            temp.push_back(1);
+            temp.push_back(0);
+            temp.push_back(1);
+            return temp;
+        case '6':
+            temp.push_back(0);
+            temp.push_back(1);
+            temp.push_back(1);
+            return temp;
+        case '7':
+            temp.push_back(1);
+            temp.push_back(1);
+            temp.push_back(1);
+            return temp;
+        case '8':
+            temp.push_back(0);
+            temp.push_back(0);
+            temp.push_back(0);
+            temp.push_back(1);
+            return temp;
+        case '9':
+            temp.push_back(1);
+            temp.push_back(0);
+            temp.push_back(0);
+            temp.push_back(1);
+            return temp;
+            
+    }
+    std::cout << "incorrect input" << std::endl; return temp; // code to avoid warning
+}
+
+bool exc_or(bool a, bool b, bool c){
+    return a^(b^c);
+}
+
+//bool nextCarry(bool a, bool b, bool c) {
+//    if ((a&b) | (b & c) | (c & a))
+//        return true;
+//    else
+//        return false;
+//}
+
+
+static std::vector<int> add(std::vector<int> x, std::vector<int> y, bool carry) {
+    if (x.size() == 0) {
+        if (!carry)
+            return y;
+        else {
+            std::vector<int> v1; v1.push_back(1);
+            return add(v1, y, false);
+        }
+    }
+    else if (y.size() == 0) {
+        if (!carry)
+            return x;
+        else {
+            std::vector<int> v1; v1.push_back(1);
+            return add(x, v1, false);
+        }
+    }
+    else {
+        std::vector<int> x1 = x;
+        x1.erase(x1.begin()); //////////////////////////////////
+        std::vector<int> y1 = y;
+        y1.erase(y1.begin());
+        bool newcarry = nextCarry(x[0], y[0], carry);
+        std::vector<int> temp = add(x1, y1, newcarry);
+        temp.insert(temp.begin(), exc_or(x[0], y[0], carry));
+        return temp;
+    }
+}
+
+static std::vector<int> mult10(std::vector<int> num) {
+    // multiplies a binary vector by 10
+    // Example: input num = [0, 1], output = [0, 0, 1, 0, 1
+    if (num.size() == 0)
+        return num;
+    std::vector<int> num1 = num;
+    num1.insert(num1.begin(), 0);
+    std::vector<int> num2 = num1;
+    num2.insert(num2.begin(), 0);
+    num2.insert(num2.begin(), 0);
+    return add(num1, num2, false);
+}
+
+std::vector<int> longDec2Bin(std::string x)
+// Ex: x = "23", y = [0, 0, 0, 0, 0, 1]
+{
+    if (x == "") {
+        std::vector<int> temp;
+        return temp;
+    }
+    else if (x.length() == 1)
+        return dec2bin1(x[0]);
+    else {
+        std::vector<int> y = mult10(longDec2Bin(x.substr(1, x.size()-1)));
+        std::vector<int> z = dec2bin1(x[0]);
+        return add(y, z, false);
+    }
 }
 
 
