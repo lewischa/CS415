@@ -618,6 +618,19 @@ bool primality2(std::vector<int> N, std::vector<int> k, std::vector<unsigned int
     return true;
 }
 
+bool primality(std::vector<int> N) {
+    // Pre-condition: none
+    // Post-condition: returns true (false) if N is prime
+    // NO confidence level in this function
+    std::vector<int> aSubI = dec2bin(3);
+    std::vector<int> nMinusOne = subtractOne(N);
+    std::vector<int> exponent = aPowerB(aSubI, nMinusOne);
+    std::vector<int> modulus = mod(exponent, N);
+    
+    if ( !isOne(modulus) ) return false;
+    return true;
+}
+
 
 static std::vector<int> dec2bin1(char c){
     // handles the case of single digit input. Ex: c = '5' produces output [1,0,1] etc.
@@ -743,8 +756,39 @@ std::vector<int> longDec2Bin(std::string x)
     }
 }
 
+std::vector<int> generatePrime(int n) {
+    // Pre-condition: n is a positive integer <= 50
+    // Post-condition: returns a vector containing a
+    // prime number of n bits, represented in binary
+    
+    std::vector<int> prime;
+    prime.push_back(1); // MSB must be 1
+    
+    for (int i = 0; i < n-1; i++) {
+        prime.push_back(rand() % 2);
+    }
+    // Test for primality:
+    if (primality(prime))
+        return prime;
+    else
+        return generatePrime(n);
+}
 
 
+void rsaKeyGenerate(int n) {
+    // Pre-condition: n is a positive integer <= 50
+    // Post-condition: prints two n-bit primes p, q in decimal
+    // and prints N, which is p * q
+    
+    std::vector<int> p = generatePrime(n);
+    std::vector<int> q = generatePrime(n);
+    std::vector<int> N = mult(p, q);
+    
+    std::cout << "p: " << Bin2Dec(p) << std::endl;
+    std::cout << "q: " << Bin2Dec(q) << std::endl;
+    std::cout << "N: " << Bin2Dec(N) << std::endl;
+    return;
+}
 
 
 

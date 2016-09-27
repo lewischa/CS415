@@ -17,6 +17,7 @@ void runOption(int option);
 void problem1_13();
 void modInverse();
 void Primality2();
+void RSAKeyGenerate();
 void printVector(std::vector<int> vec);
 void printBinary(std::vector<int> vec);
 
@@ -60,7 +61,8 @@ void runOption(int option) {
         return;
     }
     else if (option == 3) {
-        std::cout << "Can't do that option yet." << std::endl;
+//        std::cout << "Can't do that option yet." << std::endl;
+        RSAKeyGenerate();
         return;
     }
     else {
@@ -176,6 +178,23 @@ void Primality2() {
     else
         std::cout << N << " is not prime." << std::endl << std::endl;
     
+    return;
+}
+
+void RSAKeyGenerate() {
+    // Pre-condition: User input n must be at most 50 digits
+    // Post-condition: function will output p, q, and N such that
+    // p and q are n-digit primes and N = p * q
+    int numDigits;
+    std::cout << "RSA-key-generate:" << std::endl;
+    std::cout << "Enter the number of digits n for p and q (1 <= n <= 50): ";
+    std::cin >> numDigits;
+    
+    while (numDigits < 1 || numDigits > 50 || std::cin.fail()) {
+        std::cout << "You must enter a valid integer between 1 and 50, inclusive: ";
+        std::cin >> numDigits;
+    }
+    rsaKeyGenerate(numDigits);
     return;
 }
 
