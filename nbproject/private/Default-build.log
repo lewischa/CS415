@@ -1,0 +1,54 @@
+g++ -Wall main.cpp -o hw2.x
+In file included from main.cpp:27:0:
+hw.hpp: In function 'void print(std::vector<int>)':
+hw.hpp:31:22: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(int i = 0; i < pMe.size(); i++){
+                      ^
+hw.hpp: In function 'bool lessThan(std::vector<int>, std::vector<int>)':
+hw.hpp:96:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+         for(int i = 0; i < a.size(); i++){
+                          ^
+hw.hpp: In function 'bool equal(std::vector<int>, std::vector<int>)':
+hw.hpp:115:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+         for(int i = 0; i < a.size() && equal == true; i++){
+                          ^
+hw.hpp: In function 'bool zero(std::vector<int>)':
+hw.hpp:171:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+         for ( int i = 0; i < a.size(); i++ ) {
+                            ^
+hw.hpp: In function 'std::vector<int> add(std::vector<int>, std::vector<int>)':
+hw.hpp:197:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+         for(int i = 0; i < b.size(); i++){
+                          ^
+hw.hpp: In function 'bool isGreaterOrEqualTo(std::vector<int>, std::vector<int>)':
+hw.hpp:217:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+         for ( int i = 0; i < a.size(); i++ ) {
+                            ^
+hw.hpp: In function 'std::vector<int> twosComplement(std::vector<int>)':
+hw.hpp:259:23: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < a.size(); i++) {
+                       ^
+hw.hpp: In function 'std::vector<int> addComplement(std::vector<int>, std::vector<int>)':
+hw.hpp:282:22: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(int i = 0; i < b.size(); i++){
+                      ^
+In file included from main.cpp:27:0:
+hw.hpp: In function 'std::string vecToStr(std::vector<int>)':
+hw.hpp:389:23: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int j = 0; j < vec.size(); j++) {
+                       ^
+hw.hpp: In function 'bool primality2(std::vector<int>, std::vector<int>, std::vector<unsigned int>)':
+hw.hpp:591:23: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < aiVector.size(); i++) {
+                       ^
+hw.hpp:612:23: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < aSubI.size(); i++) {
+                       ^
+main.cpp: In function 'void printVector(std::vector<int>)':
+main.cpp:218:23: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < vec.size(); i++ ) {
+                       ^
+main.cpp: In function 'void printBinary(std::vector<int>)':
+main.cpp:224:23: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < vec.size(); i++ ) {
+                       ^
