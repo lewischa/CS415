@@ -11,14 +11,9 @@
 
 /*
  What still needs to be done: 
- - Update Primality2 (in main) to accept longer inputs (as strings)
- - Update RSA-key-generate to take a confidence parameter, k
-    - Can probably delete primality() in hw.cpp and just use primality2()
- - Do RSA-encrypt/RSA-decrypt
-    - This function should call RSA-key-generate first to get p, q, N
-    - May need to update RSA-key-generate to actually return p, q, N instead of
-        just print them
- - I can't think of anything else right this second . . . 
+ - getMessage() in main somehow returning a message that is not what the user entered
+ - Finish RSA-encrypt/RSA-decrypt
+    - Decrypted message coming back as 0 for some reason, couldn't figure it out
  */
 
 #include <cstdlib>
@@ -31,9 +26,24 @@ void runOption(int option);
 void problem1_13();
 void modInverse();
 void Primality2();
+void getKeyValues();
 void RSAKeyGenerate();
+std::vector<int> getMessage();
+void RSAEncrypt();
 void printVector(std::vector<int> vec);
 void printBinary(std::vector<int> vec);
+
+
+RSAKey globalRSAKey;
+bool globalHasKey = false;
+
+struct RSAKeyValues {
+    int numDigits;
+    int k;
+};
+
+RSAKeyValues globalKeyValues;    // Holds numDigits and confidence parameter k
+bool globalHasKeyValues = false;
 
 
 int main() {
@@ -45,6 +55,14 @@ int main() {
         int option = getOption();
         runOption(option);
     }
+    
+//    std::vector<int> test1;
+//    std::vector<int> test2;
+//    test2.push_back(1);
+//    test2.push_back(1);
+//    test2.push_back(1);
+//    std::cout << Bin2Dec(add(test1, mult(test1,test2))) << std::endl;
+//    std::cout << "shift " << Bin2Dec(shiftRight(test2)) << std::endl;
 
     return 0;
 }
@@ -61,6 +79,8 @@ int getOption() {
     std::cin >> option;
     if (option == 5) exit(0);
     while (option < 1 || option > 5 || std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
         std::cout << "That is not a valid option. Try again: ";
         std::cin >> option;
     }
@@ -82,7 +102,7 @@ void runOption(int option) {
         return;
     }
     else {
-        std::cout << "Can't do that option yet." << std::endl;
+        RSAEncrypt();
         return;
     }
 }
@@ -194,20 +214,132 @@ void Primality2() {
     return;
 }
 
-void RSAKeyGenerate() {
-    // Pre-condition: User input n must be at most 50 digits
-    // Post-condition: function will output p, q, and N such that
-    // p and q are n-digit primes and N = p * q
+
+
+void getKeyValues() {
     int numDigits;
-    std::cout << "RSA-key-generate:" << std::endl;
+    int k;
     std::cout << "Enter the number of digits n for p and q (1 <= n <= 50): ";
     std::cin >> numDigits;
     
     while (numDigits < 1 || numDigits > 50 || std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');    // Error handling for non-int inputs
         std::cout << "You must enter a valid integer between 1 and 50, inclusive: ";
         std::cin >> numDigits;
     }
-    rsaKeyGenerate(numDigits);
+    globalKeyValues.numDigits = numDigits;
+    
+    std::cout << "Enter a confidence parameter k (1 <= k): ";
+    std::cin >> k;
+    
+    while (k < 1 || std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');    // Error handling for non-int inputs
+        std::cout << "That is not a valid integer for k. Try again: ";
+        std::cin >> k;
+    }
+    globalKeyValues.k = k;
+    globalHasKeyValues = true;
+}
+
+void RSAKeyGenerate() {
+    // Pre-condition: User input n must be at most 50 digits
+    // Post-condition: function will output p, q, and N such that
+    // p and q are n-digit primes and N = p * q
+    std::cout << "RSA-key-generate:" << std::endl;
+    
+    // User has already entered values n and k
+    if (globalHasKeyValues) {
+        char answer;    // y or n for yes/no
+        std::cout << "You've already generated a key. Would you like to generate a different one ('y' or 'n')?: ";
+        std::cin >> answer;
+        
+        while ( (answer != 'y' && answer != 'n') || std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            std::cout << "You idiot, I said 'y' or 'n'! Try again: ";
+            std::cin >> answer;
+        }
+        if (answer == 'y') {    // User wants to generate another key
+            getKeyValues();
+            globalRSAKey = rsaKeyGenerate(globalKeyValues.numDigits, globalKeyValues.k);
+            globalHasKey = true;
+        }
+        else {      // User does not want to generate another key; use the one we have already
+            std::cout << "Nothing to see here, I'll use your previously generated key. Returning..." << std::endl;
+            return;
+        }
+    }
+    // User has not entered values for n and k
+    else {
+        getKeyValues();
+        globalRSAKey = rsaKeyGenerate(globalKeyValues.numDigits, globalKeyValues.k);
+        globalHasKey = true;
+        return;
+    }
+    
+    return;
+}
+
+std::vector<int> getMessage() {
+    std::string message = "";
+    std::vector<int> binMessage;
+    std::cout << "Please enter a message to encrypt/decrypt (up to 50 digits long): " << std::endl;
+    std::cin >> message;
+    
+    while (message.length() > 50 || std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
+        std::cout << "Invalid input. Try again: " << std::endl;
+        std::cin >> message;
+    }
+    binMessage = strDec2Bin(message);
+    return binMessage;
+}
+
+void RSAEncrypt() {
+    char answer;
+    std::vector<int> message;
+    std::vector<int> encryptedMessage;
+    std::vector<int> decryptedMessage;
+    message = getMessage();
+    std::cout << Bin2Dec(message) << std::endl;
+    
+    // User has already done option 3, and has generated an RSA key
+    if (globalHasKey) {
+        std::cout << "Looks like you've generated an RSA key already. Would you like to use that one for RSA-encrypt/RSA-decrypt ('y' or 'n')?: ";
+        std::cin >> answer;
+        while ( (answer != 'y' && answer != 'n') || std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            std::cout << "You idiot, I said 'y' or 'n'! Try again: ";
+            std::cin >> answer;
+        }
+        // User wants to use the previously generated RSA key
+        if (answer == 'y') {
+            std::cout << "Using same encryption key for RSA-encrypt." << std::endl;
+        }
+        // User wants to generate a different RSA key
+        else {
+            getKeyValues();
+            globalRSAKey = rsaKeyGenerate(globalKeyValues.numDigits, globalKeyValues.k);
+            globalHasKey = true;
+        }
+    }
+    // User has not done option 3, and first needs to generate an RSA key
+    else {
+        std::cout << "Looks like you haven't generated an RSA key yet." << std::endl;
+        getKeyValues();
+        globalRSAKey = rsaKeyGenerate(globalKeyValues.numDigits, globalKeyValues.k);
+        globalHasKey = true;
+        std::cout << "test" << std::endl;
+    }
+    std::cout << "Original message: " << Bin2Dec(message) << std::endl;
+    message = rsaEncrypt(message, globalRSAKey.e, globalRSAKey.N);
+    std::cout << "Encrypted message: " << Bin2Dec(message) << std::endl;
+    message = rsaEncrypt(encryptedMessage, globalRSAKey.d, globalRSAKey.N);
+    std::cout << "Decrypted message: " << Bin2Dec(message) << std::endl;
     return;
 }
 
