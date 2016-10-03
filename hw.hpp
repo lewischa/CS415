@@ -15,6 +15,9 @@
 #include <time.h>
 #include <string>
 
+std::vector<int> trim(std::vector<int> vec);
+bool isOne(std::vector<int> vec);
+
 struct quoRem {
     std::vector<int> q;
     std::vector<int> r;
@@ -25,6 +28,15 @@ struct extEuclid {
     std::vector<int> y;
     std::vector<int> d;
     int sign;
+};
+
+struct RSAKey {
+    std::vector<int> p;
+    std::vector<int> q;
+    std::vector<int> N;
+    std::vector<int> k;
+    std::vector<int> e;     // e will be 3
+    std::vector<int> d;     // d--> d*e = 1 mod N, MODULAR INVERSE
 };
 
 void print(std::vector<int> pMe){
@@ -107,13 +119,17 @@ bool lessThan(std::vector<int> a, std::vector<int> b){
 }
 
 bool equal(std::vector<int> a, std::vector<int> b){
-    if(a.size() != b.size()){
+    std::vector<int> trimA;
+    std::vector<int> trimB;
+    trimA = trim(a);
+    trimB = trim(b);
+    if(trimA.size() != trimB.size()){
         return false;
     }
     else{
         bool equal = true;
-        for(int i = 0; i < a.size() && equal == true; i++){
-            if(a.at(i) != b.at(i)){
+        for(int i = 0; i < trimA.size() && equal == true; i++){
+            if(trimA.at(i) != trimB.at(i)){
                 equal = false;
             }
         }
@@ -163,20 +179,24 @@ int nextCarry(int a, int b, int carry){
 //}
 
 bool zero(std::vector<int> a){
+//    std::cout << "zero" << std::endl;
     if(a.size() == 0){
         return true;
     }
     else{
+//        std::cout << a.size() << std::endl;
+//        std::cout << "zero else" << std::endl;
         /////////
         for ( int i = 0; i < a.size(); i++ ) {
             if ( a.at(i) == 1 ) return false;
         }
+        return true;
     }
     return true;
 }
 
 std::vector<int> add(std::vector<int> a, std::vector<int> b){
-    
+    if (zero(a) && zero(b)) return a;
     if(zero(a)){
         return b;
     }
@@ -448,14 +468,15 @@ std::vector<int> dec2bin(int n){
 
 //not finished
 std::vector<int> mult(std::vector<int> a, std::vector<int> b){
-    
+//    std::cout << "in mult" << std::endl;
     if(lessThan(a, b) && !equal(a, b)){
         return mult(b,a);
     }
     std::vector<int> multiply;
     //    if(lessThan(b, a)){
     while(!zero(b)){
-        
+//        if (isOne(a)) return b;
+//        if (isOne(b)) return a;
         if(!even(b)){
             std::vector<int> temp = multiply;
             multiply = add(temp, a);
@@ -466,25 +487,66 @@ std::vector<int> mult(std::vector<int> a, std::vector<int> b){
     
     return multiply;
     
+//    std::vector<int> multiply;
+//    if (zero(b)) {
+//        std::vector<int> zero;
+////        std::cout << "it's zero" << std::endl;
+//        return zero;
+//    }
+//    if (isOne(a)) return b;
+//    if (isOne(b)) return a;
+////    std::cout << "hitting mult again" << std::endl;
+//    multiply = mult(a, shiftRight(b));
+//    if (even(b)) {
+////        std::cout << "mult even" << std::endl;
+//        return add(multiply, multiply);
+//    }
+//    else {
+////        std::cout << "mult else" << std::endl;
+//        return add(a, add(multiply, multiply));
+//    }
+    
 }
 
 std::vector<int> aPowerB(std::vector<int> a, std::vector<int> b){
+//    std::cout << "aPowerB start" << std::endl;
     if(zero(b)){
         std::vector<int> one;
         one.push_back(1);
         return one;
     }
+//    else {
+//        std::vector<int> A1;
+//        std::vector<int> B1;
+////        std::cout << "aPower B before mult" << std::endl;
+//        A1 = mult(a, a);
+////        std::cout << "aPower B after mult" << std::endl;
+//        B1 = shiftRight(b);
+//        if (even(b)) {
+////            std::cout << "aPower B even" << std::endl;
+//            return aPowerB(A1, B1);
+//        }
+//        else {
+////            std::cout << "aPower B else" << std::endl;
+//            return mult(a, aPowerB(A1, B1));
+//        }
+//    }
     std::vector<int> z;
+//    std::cout << "aPowerB mid" << std::endl;
     z = aPowerB(a, shiftRight(b));
     if(even(b)){
+//        std::cout << "aPowerB even1" << std::endl;
         z = mult(z, z);
+//        std::cout << "aPowerB even2" << std::endl;
         return z;
     }
     else{
+//        std::cout << "aPowerB else" << std::endl;
         z = mult(z, z);
         z = mult(a, z);
         return z;
     }
+//    std::cout << "aPowerB end" << std::endl;
 }
 
 std::vector<int> mod(std::vector<int> a, std::vector<int> b) {
@@ -560,7 +622,7 @@ std::vector<int> trim(std::vector<int> vec) {
     // Removes leading zeroes
     vec = reverse(vec);
     
-    for (int i = vec.size() - 1; i > 0; i++) {
+    for (int i = vec.size() - 1; i > 0; i--) {
         if (vec.at(i) == 0)
             vec.pop_back();
     }
@@ -575,23 +637,16 @@ bool isOne(std::vector<int> vec) {
     one.push_back(1);
     
 //    std::cout << "inside isOne" << std::endl;
-//    return equal(trim(vec), one);
-    return equal(vec, one);
+    return equal(trim(vec), one);
+//    return equal(vec, one);
+    
+//    if (Bin2Dec(vec) == "1") return true;
+//    return false;
 }
 
-bool primality2(std::vector<int> N, std::vector<int> k, std::vector<std::vector<int> > aiVector) {
+bool primality2(std::vector<int> N, std::vector<std::vector<int> > aiVector) {
     // Pre-condition: N is a positive integer, 1 <= k <= N
     // Post-condition: Returns true if N is prime, false otherwise
-    
-    
-    
-    // This vector holds binary representations of all ai's
-//    std::vector<std::vector<int> > aSubI;
-    // Convert decimal ai's to binary representation and load the vector
-//    for (int i = 0; i < aiVector.size(); i++) {
-//        std::cout << "test" << std::endl;
-//        aSubI.push_back(dec2bin(aiVector.at(i)));
-//    }
     
     // ai ^ (N - 1)
     std::vector<int> exponent;
@@ -599,19 +654,13 @@ bool primality2(std::vector<int> N, std::vector<int> k, std::vector<std::vector<
     // ai ^ (N - 1) mod N
     std::vector<int> modulus;
     
-//    std::cout << "N - 1: " << Bin2Dec(subtractOne(N)) << std::endl;
-//    
-//    std::cout << "Printing ai's: ";
-//    for (int i = 0; i < aSubI.size(); i++) {
-//        std::cout << Bin2Dec(aSubI.at(i)) << ", ";
-//    }
-//    std::cout << std::endl;
-    
     std::vector<int> nMinusOne = subtractOne(N);
     
     for (int i = 0; i < aiVector.size(); i++) {
         exponent = aPowerB(aiVector.at(i), nMinusOne);
         modulus = mod(exponent, N);
+        
+//        std::cout << Bin2Dec(exponent) << " mod " << Bin2Dec(N) << " = " << Bin2Dec(modulus) << std::endl;
 //        std::cout << Bin2Dec(modulus) << std::endl;
         if ( !isOne(modulus) ) return false;
     }
@@ -756,7 +805,19 @@ std::vector<int> longDec2Bin(std::string x)
     }
 }
 
-std::vector<int> generatePrime(int n) {
+std::vector<int> randBinGenerator(int n) {
+    std::vector<int> result;
+//    srand(time(NULL));
+//    result.push_back(1);
+    
+    for (int i = 0; i < n - 1; i++ ) {
+        result.push_back(rand() % 2);
+    }
+    
+    return result;
+}
+
+std::vector<int> generatePrime(int n, int k) {
     // Pre-condition: n is a positive integer <= 50
     // Post-condition: returns a vector containing a
     // prime number of n bits, represented in binary
@@ -767,27 +828,100 @@ std::vector<int> generatePrime(int n) {
     for (int i = 0; i < n-1; i++) {
         prime.push_back(rand() % 2);
     }
+    
+    std::vector<std::vector<int> > aSubI;
+    for (int i = 0; i < k; i++) {
+        aSubI.push_back(randBinGenerator(n));
+    }
+    
+    
     // Test for primality:
-    if (primality(prime))
+//    std::vector<int> three;
+//    three.push_back(1);
+//    three.push_back(1);
+//    
+//    while (!primality2(prime, aSubI) || isOne(mod(prime, three))) {
+//        prime = generatePrime(n, k);
+//    }
+//    return prime;
+    std::vector<int> modulus;
+    std::vector<int> three;
+    three.push_back(1);
+    three.push_back(1);
+    std::vector<int> two;
+    two.push_back(1);
+    two.push_back(0);
+    modulus = mod(prime, three);
+    if (primality2(prime, aSubI) && equal(two, modulus)) {
         return prime;
+    }
+        
     else
-        return generatePrime(n);
+        return generatePrime(n, k);
+}
+
+std::vector<int> shiftInverse(std::vector<int> d, std::vector<int> N) {
+    std::vector<int> result;
+    result = subtract(N, d);
+    return result;
+}
+
+std::vector<int> getModInverse(RSAKey key) {
+    std::vector<int> result;
+    extEuclid modInverse;
+    std::vector<int> e;
+    e.push_back(1);
+    e.push_back(1);
+    
+    modInverse = extendedEuclid(e, mult(subtractOne(key.p), subtractOne(key.q)));
+    if (modInverse.sign == 0) {
+        result = modInverse.x;
+    }
+    if (modInverse.sign == 1) {
+        result = shiftInverse(modInverse.x, mult(subtractOne(key.p), subtractOne(key.q)));
+        std::vector<int> test;
+        
+//        test = mult(e, result);
+//        std::vector<int> modulus;
+//        modulus = mult(subtractOne(key.p), subtractOne(key.q));
+//        while(!isOne(mod(test, modulus))) {
+//            test = shiftInverse2(test, )
+//        }
+    }
+    return result;
 }
 
 
-void rsaKeyGenerate(int n) {
+RSAKey rsaKeyGenerate(int n, int k) {
     // Pre-condition: n is a positive integer <= 50
     // Post-condition: prints two n-bit primes p, q in decimal
     // and prints N, which is p * q
     
-    std::vector<int> p = generatePrime(n);
-    std::vector<int> q = generatePrime(n);
+    std::vector<int> p = generatePrime(n, k);
+    std::vector<int> q = generatePrime(n, k);
     std::vector<int> N = mult(p, q);
+    std::vector<int> three;
+    three.push_back(1);
+    three.push_back(1);
+//    while (isOne(mod(N, three))) {
+////        p = generatePrime(n, k);
+//        q = generatePrime(n, k);
+//        N = mult(p, q);
+//    }
+    RSAKey key;
+    key.p = p;
+    key.q = q;
+    key.N = N;
+    key.e.push_back(1);
+    key.e.push_back(1);
+    key.d = getModInverse(key);
     
     std::cout << "p: " << Bin2Dec(p) << std::endl;
     std::cout << "q: " << Bin2Dec(q) << std::endl;
     std::cout << "N: " << Bin2Dec(N) << std::endl;
-    return;
+    std::cout << "e: " << Bin2Dec(key.e) << std::endl;
+    std::cout << "d: " << Bin2Dec(key.d) << std::endl;
+    return key;
 }
 
 
@@ -843,5 +977,18 @@ std::vector<int> randBinGenerator(std::string str){
 //    print(N);
     return result;
 }
+
+std::vector<int> rsaEncrypt(std::vector<int> message, std::vector<int> exponent, std::vector<int> N) {
+    std::vector<int> result;
+//    std::cout << "test2" << std::endl;
+//    std::cout << Bin2Dec(message) << std::endl;
+//    std::cout << Bin2Dec(exponent) << std::endl;
+//    std::cout << Bin2Dec(N) << std::endl;
+    result = mod( aPowerB(message, exponent), N);
+//    std::cout << "test3" << std::endl;
+    return result;
+}
+
+
 #endif	/* HW1_HPP */
 
