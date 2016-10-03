@@ -2,4 +2,4 @@ all:
 	g++ -Wall main.cpp -o hw2.exe
 
 clean:
-	rm *.x *.exe
+	rm *.exe
