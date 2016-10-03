@@ -185,7 +185,7 @@ void Primality2() {
         aSubI.push_back(randBinGenerator(N));
     }
     
-    bool result = primality2(strDec2Bin(N), dec2bin(k), aSubI);
+    bool result = primality2(strDec2Bin(N), aSubI);
     if ( result )
         std::cout << N << " is prime." << std::endl << std::endl;
     else

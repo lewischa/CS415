@@ -579,7 +579,7 @@ bool isOne(std::vector<int> vec) {
     return equal(vec, one);
 }
 
-bool primality2(std::vector<int> N, std::vector<int> k, std::vector<std::vector<int> > aiVector) {
+bool primality2(std::vector<int> N, std::vector<std::vector<int> > aiVector) {
     // Pre-condition: N is a positive integer, 1 <= k <= N
     // Post-condition: Returns true if N is prime, false otherwise
     
