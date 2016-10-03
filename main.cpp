@@ -11,14 +11,9 @@
 
 /*
  What still needs to be done: 
- - Update Primality2 (in main) to accept longer inputs (as strings)
- - Update RSA-key-generate to take a confidence parameter, k
-    - Can probably delete primality() in hw.cpp and just use primality2()
- - Do RSA-encrypt/RSA-decrypt
-    - This function should call RSA-key-generate first to get p, q, N
-    - May need to update RSA-key-generate to actually return p, q, N instead of
-        just print them
- - I can't think of anything else right this second . . . 
+ - getMessage() in main somehow returning a message that is not what the user entered
+ - Finish RSA-encrypt/RSA-decrypt
+    - Decrypted message coming back as 0 for some reason, couldn't figure it out
  */
 
 #include <cstdlib>
