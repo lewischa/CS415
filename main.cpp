@@ -294,7 +294,7 @@ std::vector<int> getMessage() {
         std::cout << "Invalid input. Try again: " << std::endl;
         std::cin >> message;
     }
-    binMessage = reverse(longDec2Bin(message));
+    binMessage = strDec2Bin(message);
     return binMessage;
 }
 

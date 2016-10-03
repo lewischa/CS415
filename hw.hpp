@@ -860,6 +860,12 @@ std::vector<int> generatePrime(int n, int k) {
         return generatePrime(n, k);
 }
 
+std::vector<int> shiftInverse2(std::vector<int> d, std::vector<int> N) {
+    std::vector<int> result;
+    result = add(d, N);
+    return result;
+}
+
 std::vector<int> shiftInverse(std::vector<int> d, std::vector<int> N) {
     std::vector<int> result;
     result = subtract(N, d);
@@ -868,6 +874,7 @@ std::vector<int> shiftInverse(std::vector<int> d, std::vector<int> N) {
 
 std::vector<int> getModInverse(RSAKey key) {
     std::vector<int> result;
+    std::vector<int> test;
     extEuclid modInverse;
     std::vector<int> e;
     e.push_back(1);
@@ -876,17 +883,24 @@ std::vector<int> getModInverse(RSAKey key) {
     modInverse = extendedEuclid(e, mult(subtractOne(key.p), subtractOne(key.q)));
     if (modInverse.sign == 0) {
         result = modInverse.x;
+        test = mult(e, result);
+        std::vector<int> modulus;
+        modulus = mult(subtractOne(key.p), subtractOne(key.q));
+        while(!isOne(mod(test, modulus))) {
+            test = shiftInverse2(test, modulus);
+        }
+        result = test;
     }
     if (modInverse.sign == 1) {
         result = shiftInverse(modInverse.x, mult(subtractOne(key.p), subtractOne(key.q)));
-        std::vector<int> test;
         
-//        test = mult(e, result);
-//        std::vector<int> modulus;
-//        modulus = mult(subtractOne(key.p), subtractOne(key.q));
-//        while(!isOne(mod(test, modulus))) {
-//            test = shiftInverse2(test, )
-//        }
+        test = mult(e, result);
+        std::vector<int> modulus;
+        modulus = mult(subtractOne(key.p), subtractOne(key.q));
+        while(!isOne(mod(test, modulus))) {
+            test = shiftInverse2(test, modulus);
+        }
+        result = test;
     }
     return result;
 }
