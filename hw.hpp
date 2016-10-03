@@ -579,19 +579,19 @@ bool isOne(std::vector<int> vec) {
     return equal(vec, one);
 }
 
-bool primality2(std::vector<int> N, std::vector<int> k, std::vector<unsigned int> aiVector) {
+bool primality2(std::vector<int> N, std::vector<int> k, std::vector<std::vector<int> > aiVector) {
     // Pre-condition: N is a positive integer, 1 <= k <= N
     // Post-condition: Returns true if N is prime, false otherwise
     
     
     
     // This vector holds binary representations of all ai's
-    std::vector<std::vector<int> > aSubI;
+//    std::vector<std::vector<int> > aSubI;
     // Convert decimal ai's to binary representation and load the vector
-    for (int i = 0; i < aiVector.size(); i++) {
+//    for (int i = 0; i < aiVector.size(); i++) {
 //        std::cout << "test" << std::endl;
-        aSubI.push_back(dec2bin(aiVector.at(i)));
-    }
+//        aSubI.push_back(dec2bin(aiVector.at(i)));
+//    }
     
     // ai ^ (N - 1)
     std::vector<int> exponent;
@@ -609,8 +609,8 @@ bool primality2(std::vector<int> N, std::vector<int> k, std::vector<unsigned int
     
     std::vector<int> nMinusOne = subtractOne(N);
     
-    for (int i = 0; i < aSubI.size(); i++) {
-        exponent = aPowerB(aSubI.at(i), nMinusOne);
+    for (int i = 0; i < aiVector.size(); i++) {
+        exponent = aPowerB(aiVector.at(i), nMinusOne);
         modulus = mod(exponent, N);
 //        std::cout << Bin2Dec(modulus) << std::endl;
         if ( !isOne(modulus) ) return false;
@@ -791,6 +791,57 @@ void rsaKeyGenerate(int n) {
 }
 
 
+std::vector<int> strDec2Bin(std::string str){
+    //keep track of last char in str to be converted to bin
+    int endPos = 0;
+    std::vector<int> result;
+    
+    //starting from last char in str, convert str to binary
+    for(int i = str.length()-1; i > -1; i--){
+        //convert char at str[i] to a binary value
+        std::vector<int> temp = dec2bin1(str[i]);
+//        print(temp);
+        for(int j = 0; j < endPos; j++){
+            //temp * 10 to put value in correct position
+            temp = mult10(temp);
+        }
+        //Add temp to result
+        result = add(reverse(temp), result);
+        //increment endPos
+        endPos++;
+    }
+    
+    //return result
+    return result;
+}
 
+std::vector<int> randBinGenerator(std::string str){
+    std::vector<int> result;
+    //since the least amount any value can be divided by is 2, divide
+    //convert str to binary representation and divide by 2;
+    std::vector<int> N = shiftRight(strDec2Bin(str));
+    do{
+        //create a temp array for creating a random binary number
+        std::vector<int> temp;
+        //ensure most significant bit = 1
+        temp.push_back(1);
+        
+        //create a randomSize for the temp array that is 0 < randSize <= N
+        srand(time(NULL));
+        int randSize = (rand()%N.size());
+        
+        //insert random bits into temp
+        for(int i = 0; i < randSize; i++){
+            srand(time(NULL));
+            temp.push_back(rand()%2);
+        }
+        //result = temp
+        result = temp;
+    }//if result > N, try again
+    while(!lessThan(result, N));
+//    print(result);
+//    print(N);
+    return result;
+}
 #endif	/* HW1_HPP */
 

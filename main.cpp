@@ -45,6 +45,8 @@ int main() {
         int option = getOption();
         runOption(option);
     }
+
+    return 0;
 }
 
 int getOption() {
@@ -165,7 +167,7 @@ void Primality2() {
     // k is a confidence parameter that reduces probability
     // of a false positive to below 1/(2^k)
     
-    unsigned int N;
+    std::string N;
     int k;
     
     std::cout << "Enter a positive integer N: ";
@@ -177,16 +179,13 @@ void Primality2() {
     srand(time(NULL));
     
     // Array to hold decimal representations of all ai's
-    std::vector<unsigned int> aSubI;
+    std::vector<std::vector<int> > aSubI;
     
     for (int i = 0; i < k; i++) {
-        unsigned int x = rand() % N + 1;
-        while ( x == 1 || x == N )
-            x = rand() % N + 1;
-        aSubI.push_back(x);
+        aSubI.push_back(randBinGenerator(N));
     }
     
-    bool result = primality2(dec2bin(N), dec2bin(k), aSubI);
+    bool result = primality2(strDec2Bin(N), dec2bin(k), aSubI);
     if ( result )
         std::cout << N << " is prime." << std::endl << std::endl;
     else
