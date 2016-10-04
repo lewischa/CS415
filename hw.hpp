@@ -644,6 +644,25 @@ bool isOne(std::vector<int> vec) {
 //    return false;
 }
 
+std::vector<int> modexp(std::vector<int> x, std::vector<int> y, std::vector<int> N) {
+    // Pre-condition: integers x, y, N > 0
+    // Post-condition: x^y mod N
+    
+    std::vector<int> z;
+    if (zero(y)) {
+        z.push_back(1);
+        return z;
+    }
+    
+    z = modexp(x, shiftRight(y), N);
+    if (even(y)) {
+        return mod(mult(z,z), N);
+    }
+    else {
+        return mod(mult(x, mult(z, z)), N);
+    }
+}
+
 bool primality2(std::vector<int> N, std::vector<std::vector<int> > aiVector) {
     // Pre-condition: N is a positive integer, 1 <= k <= N
     // Post-condition: Returns true if N is prime, false otherwise
@@ -657,8 +676,9 @@ bool primality2(std::vector<int> N, std::vector<std::vector<int> > aiVector) {
     std::vector<int> nMinusOne = subtractOne(N);
     
     for (int i = 0; i < aiVector.size(); i++) {
-        exponent = aPowerB(aiVector.at(i), nMinusOne);
-        modulus = mod(exponent, N);
+        modulus = modexp(aiVector.at(i), nMinusOne, N);
+//        exponent = aPowerB(aiVector.at(i), nMinusOne);
+//        modulus = mod(exponent, N);
         
 //        std::cout << Bin2Dec(exponent) << " mod " << Bin2Dec(N) << " = " << Bin2Dec(modulus) << std::endl;
 //        std::cout << Bin2Dec(modulus) << std::endl;
@@ -879,29 +899,28 @@ std::vector<int> getModInverse(RSAKey key) {
     std::vector<int> e;
     e.push_back(1);
     e.push_back(1);
+    std::vector<int> modulus;
+    modulus = mult(subtractOne(key.p), subtractOne(key.q));
     
     modInverse = extendedEuclid(e, mult(subtractOne(key.p), subtractOne(key.q)));
     if (modInverse.sign == 0) {
         result = modInverse.x;
-        test = mult(e, result);
-        std::vector<int> modulus;
-        modulus = mult(subtractOne(key.p), subtractOne(key.q));
-        while(!isOne(mod(test, modulus))) {
-            test = shiftInverse2(test, modulus);
-        }
-        result = test;
     }
     if (modInverse.sign == 1) {
         result = shiftInverse(modInverse.x, mult(subtractOne(key.p), subtractOne(key.q)));
         
-        test = mult(e, result);
-        std::vector<int> modulus;
-        modulus = mult(subtractOne(key.p), subtractOne(key.q));
-        while(!isOne(mod(test, modulus))) {
-            test = shiftInverse2(test, modulus);
-        }
-        result = test;
+//        test = mult(e, result);
+//        while(!isOne(mod(test, modulus))) {
+//            test = shiftInverse2(test, modulus);
+//        }
+//        result = test;
     }
+    test = mult(e, result);
+    
+    while(!isOne(mod(test, modulus))) {
+        test = shiftInverse2(test, modulus);
+    }
+    result = test;
     return result;
 }
 
@@ -913,15 +932,13 @@ RSAKey rsaKeyGenerate(int n, int k) {
     
     std::vector<int> p = generatePrime(n, k);
     std::vector<int> q = generatePrime(n, k);
-    std::vector<int> N = mult(p, q);
     std::vector<int> three;
     three.push_back(1);
     three.push_back(1);
-//    while (isOne(mod(N, three))) {
-////        p = generatePrime(n, k);
-//        q = generatePrime(n, k);
-//        N = mult(p, q);
-//    }
+    while (equal(p,q)) {
+        q = generatePrime(n, k);
+    }
+    std::vector<int> N = mult(p, q);
     RSAKey key;
     key.p = p;
     key.q = q;
@@ -975,12 +992,12 @@ std::vector<int> randBinGenerator(std::string str){
         temp.push_back(1);
         
         //create a randomSize for the temp array that is 0 < randSize <= N
-        srand(time(NULL));
+//        srand(time(NULL));
         int randSize = (rand()%N.size());
         
         //insert random bits into temp
         for(int i = 0; i < randSize; i++){
-            srand(time(NULL));
+//            srand(time(NULL));
             temp.push_back(rand()%2);
         }
         //result = temp

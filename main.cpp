@@ -58,12 +58,17 @@ int main() {
     
 //    std::vector<int> test1;
 //    std::vector<int> test2;
+//    std::vector<int> mod;
+//    test1.push_back(1);
+//    test1.push_back(1);
+//    test1.push_back(1);
 //    test2.push_back(1);
-//    test2.push_back(1);
-//    test2.push_back(1);
-//    std::cout << Bin2Dec(add(test1, mult(test1,test2))) << std::endl;
-//    std::cout << "shift " << Bin2Dec(shiftRight(test2)) << std::endl;
-
+//    test2.push_back(0);
+//    mod.push_back(1);
+//    mod.push_back(0);
+//    mod.push_back(1);
+//    
+//    std::cout << Bin2Dec(modexp(test1, test2, mod)) << std::endl;
     return 0;
 }
 
@@ -338,7 +343,7 @@ void RSAEncrypt() {
     std::cout << "Original message: " << Bin2Dec(message) << std::endl;
     message = rsaEncrypt(message, globalRSAKey.e, globalRSAKey.N);
     std::cout << "Encrypted message: " << Bin2Dec(message) << std::endl;
-    message = rsaEncrypt(encryptedMessage, globalRSAKey.d, globalRSAKey.N);
+    message = rsaEncrypt(message, globalRSAKey.d, globalRSAKey.N);
     std::cout << "Decrypted message: " << Bin2Dec(message) << std::endl;
     return;
 }
