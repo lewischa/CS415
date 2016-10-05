@@ -242,6 +242,7 @@ void getKeyValues() {
     }
     globalKeyValues.k = k;
     globalHasKeyValues = true;
+    
 }
 
 void RSAKeyGenerate() {
