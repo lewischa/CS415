@@ -88,16 +88,24 @@ bool even(std::vector<int> n){
 }
 bool lessThan(std::vector<int> a, std::vector<int> b){
 //    print(b);
-    if(a.size() > 0 && a.at(0) == 0){
-//        std::cout << "invalid binary format" << std::endl;
-//        std::cout << "printing a ";
-//        print(a);
-    }
-    if(b.size() > 0 && b.at(0) == 0){
-//        std::cout << "invalid binary format" << std::endl;
-//        std::cout << "printing b ";
-//        print(b);
-    }
+//    if(a.size() > 0 && a.at(0) == 0){
+////        std::cout << "invalid binary format" << std::endl;
+////        std::cout << "printing a ";
+////        print(a);
+//    }
+//    if(b.size() > 0 && b.at(0) == 0){
+////        std::cout << "invalid binary format" << std::endl;
+////        std::cout << "printing b ";
+////        print(b);
+//    }
+    
+    /////////////////////////////////////////////
+//    std::cout << "a: "; print(a);
+//    std::vector<int> trimA = trim(a);
+//    std::cout << "trimA: "; print(trimA);
+//    std::cout << "b: "; print(b);
+//    std::vector<int> trimB = trim(b);
+//    std::cout << "trimB: "; print(trimB);
     if(a.size() < b.size()){
         return true;
     }
@@ -620,14 +628,21 @@ std::vector<int> subtractOne(std::vector<int> vec) {
 
 std::vector<int> trim(std::vector<int> vec) {
     // Removes leading zeroes
-    vec = reverse(vec);
     
-    for (int i = vec.size() - 1; i > 0; i--) {
-        if (vec.at(i) == 0)
-            vec.pop_back();
+    if (vec.size() == 0) return vec;
+    std::vector<int> trimmed;
+    trimmed = reverse(vec);
+    
+    while(trimmed.back() == 0) {
+        trimmed = shiftRight(trimmed);
     }
+    
+//    for (int i = trimmed.size() - 1; i > 0; i--) {
+//        if (trimmed.at(i) == 0)
+//            trimmed.pop_back();
+//    }
 //    std::cout << "inside trim" << std::endl;
-    return vec;
+    return reverse(trimmed);
 }
 
 bool isOne(std::vector<int> vec) {
@@ -675,8 +690,10 @@ bool primality2(std::vector<int> N, std::vector<std::vector<int> > aiVector) {
     
     std::vector<int> nMinusOne = subtractOne(N);
     
+//    std::cout << Bin2Dec(N) << Bin2Dec(nMinusOne) << std::endl;
     for (int i = 0; i < aiVector.size(); i++) {
         modulus = modexp(aiVector.at(i), nMinusOne, N);
+//        std::cout << Bin2Dec(aiVector.at(i)) << std::endl;
 //        exponent = aPowerB(aiVector.at(i), nMinusOne);
 //        modulus = mod(exponent, N);
         
@@ -828,7 +845,7 @@ std::vector<int> longDec2Bin(std::string x)
 std::vector<int> randBinGenerator(int n) {
     std::vector<int> result;
 //    srand(time(NULL));
-//    result.push_back(1);
+    result.push_back(1);
     
     for (int i = 0; i < n - 1; i++ ) {
         result.push_back(rand() % 2);
@@ -845,7 +862,7 @@ std::vector<int> generatePrime(int n, int k) {
     std::vector<int> prime;
     prime.push_back(1); // MSB must be 1
     
-    for (int i = 0; i < n-1; i++) {
+    for (int i = 1; i < n-1; i++) {
         prime.push_back(rand() % 2);
     }
     
@@ -962,7 +979,7 @@ std::vector<int> strDec2Bin(std::string str){
     std::vector<int> result;
     
     //starting from last char in str, convert str to binary
-    for(int i = str.length()-1; i > -1; i--){
+    for(long long i = str.length()-1; i > -1; i--){
         //convert char at str[i] to a binary value
         std::vector<int> temp = dec2bin1(str[i]);
 //        print(temp);
@@ -992,12 +1009,12 @@ std::vector<int> randBinGenerator(std::string str){
         temp.push_back(1);
         
         //create a randomSize for the temp array that is 0 < randSize <= N
-//        srand(time(NULL));
+        srand((unsigned int)time(NULL));
         int randSize = (rand()%N.size());
         
         //insert random bits into temp
         for(int i = 0; i < randSize; i++){
-//            srand(time(NULL));
+            srand((unsigned int)time(NULL));
             temp.push_back(rand()%2);
         }
         //result = temp
@@ -1015,8 +1032,14 @@ std::vector<int> rsaEncrypt(std::vector<int> message, std::vector<int> exponent,
 //    std::cout << Bin2Dec(message) << std::endl;
 //    std::cout << Bin2Dec(exponent) << std::endl;
 //    std::cout << Bin2Dec(N) << std::endl;
-    result = mod( aPowerB(message, exponent), N);
-//    std::cout << "test3" << std::endl;
+    
+    result = modexp(message, exponent, N);
+    std::cout << Bin2Dec(message) << std::endl;
+    std::cout << Bin2Dec(exponent) << std::endl;
+//    result = mod( aPowerB(message, exponent), N);
+
+    
+    //    std::cout << "test3" << std::endl;
     return result;
 }
 

@@ -55,20 +55,16 @@ int main() {
         int option = getOption();
         runOption(option);
     }
-    
-//    std::vector<int> test1;
-//    std::vector<int> test2;
-//    std::vector<int> mod;
-//    test1.push_back(1);
-//    test1.push_back(1);
-//    test1.push_back(1);
-//    test2.push_back(1);
-//    test2.push_back(0);
-//    mod.push_back(1);
-//    mod.push_back(0);
-//    mod.push_back(1);
+
+//    std::vector<int> _144;
+//    std::vector<int> _137;
+//    _144.push_back(0); _144.push_back(0);
+//    _144.push_back(0); _144.push_back(0);
+//    _144.push_back(1); _144.push_back(1);
+//    _144.push_back(0); _144.push_back(0);
 //    
-//    std::cout << Bin2Dec(modexp(test1, test2, mod)) << std::endl;
+//    print(_144); print(reverse(_144)); print(trim(_144));
+
     return 0;
 }
 
@@ -201,7 +197,7 @@ void Primality2() {
     std::cin >> k;
     
     // Initialize random number generator
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     
     // Array to hold decimal representations of all ai's
     std::vector<std::vector<int> > aSubI;
@@ -309,6 +305,7 @@ void RSAEncrypt() {
     std::vector<int> encryptedMessage;
     std::vector<int> decryptedMessage;
     message = getMessage();
+    printBinary(message);
     std::cout << Bin2Dec(message) << std::endl;
     
     // User has already done option 3, and has generated an RSA key
