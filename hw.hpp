@@ -15,7 +15,7 @@
 #include <time.h>
 #include <string>
 
-std::vector<int> trim(std::vector<int> vec);
+sstd::vector<int> trim(std::vector<int> vec);
 bool isOne(std::vector<int> vec);
 
 struct quoRem {
@@ -45,6 +45,8 @@ void print(std::vector<int> pMe){
     }
     std::cout << std::endl;
 }
+
+
 
 std::vector<int> shiftLeft(std::vector<int> shiftMe){
     if(shiftMe.size() == 0){
@@ -842,6 +844,7 @@ std::vector<int> longDec2Bin(std::string x)
     }
 }
 
+
 std::vector<int> randBinGenerator(int n) {
     std::vector<int> result;
 //    srand(time(NULL));
@@ -866,9 +869,13 @@ std::vector<int> generatePrime(int n, int k) {
         prime.push_back(rand() % 2);
     }
     
+    if(prime.back() == 0){
+        prime.back() = 1;
+    }
+    
     std::vector<std::vector<int> > aSubI;
     for (int i = 0; i < k; i++) {
-        aSubI.push_back(randBinGenerator(n));
+        aSubI.push_back(randBinGenerator(Bin2Dec(prime)));
     }
     
     
@@ -1001,7 +1008,8 @@ std::vector<int> randBinGenerator(std::string str){
     std::vector<int> result;
     //since the least amount any value can be divided by is 2, divide
     //convert str to binary representation and divide by 2;
-    std::vector<int> N = shiftRight(strDec2Bin(str));
+//    std::vector<int> N = shiftRight(strDec2Bin(str));
+    std::vector<int> N = strDec2Bin(str);
     do{
         //create a temp array for creating a random binary number
         std::vector<int> temp;
@@ -1009,12 +1017,12 @@ std::vector<int> randBinGenerator(std::string str){
         temp.push_back(1);
         
         //create a randomSize for the temp array that is 0 < randSize <= N
-        srand((unsigned int)time(NULL));
-        int randSize = (rand()%N.size());
+//        srand((unsigned int)time(NULL));
+        int randSize = (rand()%N.size());        
         
         //insert random bits into temp
-        for(int i = 0; i < randSize; i++){
-            srand((unsigned int)time(NULL));
+        for(int i = 1; i < randSize; i++){
+//            srand((unsigned int)time(NULL));
             temp.push_back(rand()%2);
         }
         //result = temp
@@ -1034,13 +1042,17 @@ std::vector<int> rsaEncrypt(std::vector<int> message, std::vector<int> exponent,
 //    std::cout << Bin2Dec(N) << std::endl;
     
     result = modexp(message, exponent, N);
-    std::cout << Bin2Dec(message) << std::endl;
-    std::cout << Bin2Dec(exponent) << std::endl;
+//    std::cout << Bin2Dec(message) << std::endl;
+//    std::cout << Bin2Dec(exponent) << std::endl;
 //    result = mod( aPowerB(message, exponent), N);
 
     
     //    std::cout << "test3" << std::endl;
     return result;
+}
+
+void printDec(std::vector<int> printMe){
+    std::cout << Bin2Dec(printMe) << std::endl;
 }
 
 
