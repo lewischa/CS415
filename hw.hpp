@@ -866,6 +866,10 @@ std::vector<int> generatePrime(int n, int k) {
         prime.push_back(rand() % 2);
     }
     
+    if (prime.back() == 0) {
+        prime.back() = 1;
+    }
+    
     std::vector<std::vector<int> > aSubI;
     for (int i = 0; i < k; i++) {
         aSubI.push_back(randBinGenerator(n));
@@ -919,25 +923,33 @@ std::vector<int> getModInverse(RSAKey key) {
     std::vector<int> modulus;
     modulus = mult(subtractOne(key.p), subtractOne(key.q));
     
-    modInverse = extendedEuclid(e, mult(subtractOne(key.p), subtractOne(key.q)));
-    if (modInverse.sign == 0) {
-        result = modInverse.x;
-    }
+    modInverse = extendedEuclid(e, modulus);
+//    std::cout << Bin2Dec(modInverse.x) << std::endl;
+//    std::cout << modInverse.sign << std::endl;
+    
     if (modInverse.sign == 1) {
         result = shiftInverse(modInverse.x, mult(subtractOne(key.p), subtractOne(key.q)));
-        
-//        test = mult(e, result);
-//        while(!isOne(mod(test, modulus))) {
-//            test = shiftInverse2(test, modulus);
-//        }
+//        std::cout << Bin2Dec(result) << std::endl;
+//        std::cout << Bin2Dec(shiftInverse2(result, modulus)) << std::endl;
+//        std::cout << "helloooo" << std::endl;
+        test = mult(e, result);
+        while(!isOne(mod(test, modulus))) {
+            test = shiftInverse2(test, modulus);
+//            std::cout << "after 2" << std::endl; print(test);
+        }
 //        result = test;
     }
-    test = mult(e, result);
-    
-    while(!isOne(mod(test, modulus))) {
-        test = shiftInverse2(test, modulus);
+    else {
+        result = modInverse.x;
+//        std::cout << "inside if" << std::endl; print(result);
     }
-    result = test;
+//    print(result);
+//    test = mult(e, result);
+//    
+//    while(!isOne(mod(test, modulus))) {
+//        test = shiftInverse2(test, modulus);
+//    }
+//    result = test;
     return result;
 }
 
@@ -1034,8 +1046,8 @@ std::vector<int> rsaEncrypt(std::vector<int> message, std::vector<int> exponent,
 //    std::cout << Bin2Dec(N) << std::endl;
     
     result = modexp(message, exponent, N);
-    std::cout << Bin2Dec(message) << std::endl;
-    std::cout << Bin2Dec(exponent) << std::endl;
+//    std::cout << Bin2Dec(message) << std::endl;
+//    std::cout << Bin2Dec(exponent) << std::endl;
 //    result = mod( aPowerB(message, exponent), N);
 
     

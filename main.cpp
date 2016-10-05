@@ -259,7 +259,7 @@ void RSAKeyGenerate() {
         while ( (answer != 'y' && answer != 'n') || std::cin.fail()) {
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            std::cout << "You idiot, I said 'y' or 'n'! Try again: ";
+            std::cout << "Input must be 'y' or 'n'! Try again: ";
             std::cin >> answer;
         }
         if (answer == 'y') {    // User wants to generate another key
@@ -305,17 +305,17 @@ void RSAEncrypt() {
     std::vector<int> encryptedMessage;
     std::vector<int> decryptedMessage;
     message = getMessage();
-    printBinary(message);
-    std::cout << Bin2Dec(message) << std::endl;
+//    printBinary(message);
+//    std::cout << Bin2Dec(message) << std::endl;
     
     // User has already done option 3, and has generated an RSA key
     if (globalHasKey) {
-        std::cout << "Looks like you've generated an RSA key already. Would you like to use that one for RSA-encrypt/RSA-decrypt ('y' or 'n')?: ";
+        std::cout << "Use previously generated key for RSA-encrypt/RSA-decrypt ('y' or 'n')?: ";
         std::cin >> answer;
         while ( (answer != 'y' && answer != 'n') || std::cin.fail()) {
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            std::cout << "You idiot, I said 'y' or 'n'! Try again: ";
+            std::cout << "Input must be 'y' or 'n'! Try again: ";
             std::cin >> answer;
         }
         // User wants to use the previously generated RSA key
