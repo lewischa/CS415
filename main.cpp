@@ -7,15 +7,6 @@
  *Created on September 24, 2016 13:55
  */
 
-
-
-/*
- What still needs to be done: 
- - getMessage() in main somehow returning a message that is not what the user entered
- - Finish RSA-encrypt/RSA-decrypt
-    - Decrypted message coming back as 0 for some reason, couldn't figure it out
- */
-
 #include <cstdlib>
 #include <iostream>
 #include <vector>
@@ -56,15 +47,6 @@ int main() {
         runOption(option);
     }
 
-//    std::vector<int> _144;
-//    std::vector<int> _137;
-//    _144.push_back(0); _144.push_back(0);
-//    _144.push_back(0); _144.push_back(0);
-//    _144.push_back(1); _144.push_back(1);
-//    _144.push_back(0); _144.push_back(0);
-//    
-//    print(_144); print(reverse(_144)); print(trim(_144));
-
     return 0;
 }
 
@@ -98,7 +80,6 @@ void runOption(int option) {
         return;
     }
     else if (option == 3) {
-//        std::cout << "Can't do that option yet." << std::endl;
         RSAKeyGenerate();
         return;
     }
@@ -181,7 +162,7 @@ void modInverse() {
     return;
 }
 
-// Still needs some work to allow for larger inputs
+
 void Primality2() {
     // Prompts the user for integers N and k
     // N will be the number to test for primality,
@@ -220,7 +201,7 @@ void Primality2() {
 void getKeyValues() {
     int numDigits;
     int k;
-    std::cout << "Enter the number of digits n for p and q (1 <= n <= 50): ";
+    std::cout << "Enter the number of bits n for p and q (1 <= n <= 50): ";
     std::cin >> numDigits;
     
     while (numDigits < 1 || numDigits > 50 || std::cin.fail()) {
@@ -231,7 +212,7 @@ void getKeyValues() {
     }
     globalKeyValues.numDigits = numDigits;
     
-    std::cout << "Enter a confidence parameter k (1 <= k): ";
+    std::cout << "Enter a confidence parameter k (k >= 1): ";
     std::cin >> k;
     
     while (k < 1 || std::cin.fail()) {
@@ -303,11 +284,7 @@ std::vector<int> getMessage() {
 void RSAEncrypt() {
     char answer;
     std::vector<int> message;
-    std::vector<int> encryptedMessage;
-    std::vector<int> decryptedMessage;
     message = getMessage();
-//    printBinary(message);
-//    std::cout << Bin2Dec(message) << std::endl;
     
     // User has already done option 3, and has generated an RSA key
     if (globalHasKey) {

@@ -15,7 +15,8 @@
 #include <time.h>
 #include <string>
 
-sstd::vector<int> trim(std::vector<int> vec);
+std::vector<int> trim(std::vector<int> vec);
+std::vector<int> randBinGenerator(std::string str);
 bool isOne(std::vector<int> vec);
 
 struct quoRem {
@@ -59,13 +60,6 @@ std::vector<int> shiftLeft(std::vector<int> shiftMe){
     return shiftMe;
 }
 
-//std::vector<int> shiftRight(std::vector<int> shiftMe){
-//    if(shiftMe.size() == 0){
-//        return shiftMe;
-//    }
-//    shiftMe.pop_back();
-//    return shiftMe;
-//}
 
 std::vector<int> shiftRight(std::vector<int> shiftMe){
     if(shiftMe.size() == 0){
@@ -178,25 +172,11 @@ int nextCarry(int a, int b, int carry){
     }
 }
 
-//bool zero(std::vector<int> a){
-//     
-//    if(a.size() == 0){
-//        return true;
-//    }
-//    else{
-//        return false;
-//    }
-//}
-
 bool zero(std::vector<int> a){
-//    std::cout << "zero" << std::endl;
     if(a.size() == 0){
         return true;
     }
     else{
-//        std::cout << a.size() << std::endl;
-//        std::cout << "zero else" << std::endl;
-        /////////
         for ( int i = 0; i < a.size(); i++ ) {
             if ( a.at(i) == 1 ) return false;
         }
@@ -223,33 +203,30 @@ std::vector<int> add(std::vector<int> a, std::vector<int> b){
     std::vector<int> result;
     
 
-        int n = a.size() - b.size();
-        for(int i = 0; i < b.size(); i++){
-            result.push_back(xOr(reverse(a).at(i), reverse(b).at(i), carry));
-            carry = nextCarry(reverse(a).at(i), reverse(b).at(i), carry);
-        }
-        for(int i = n -1; i >= 0; i--){
-            result.push_back(xOr(a.at(i), 0, carry));
-            carry = nextCarry(a.at(i), 0, carry);
-        }
-        if(carry == 1){
-            result.push_back(carry);
-        }
+    int n = a.size() - b.size();
+    for(int i = 0; i < b.size(); i++){
+        result.push_back(xOr(reverse(a).at(i), reverse(b).at(i), carry));
+        carry = nextCarry(reverse(a).at(i), reverse(b).at(i), carry);
+    }
+    for(int i = n -1; i >= 0; i--){
+        result.push_back(xOr(a.at(i), 0, carry));
+        carry = nextCarry(a.at(i), 0, carry);
+    }
+    if(carry == 1){
+        result.push_back(carry);
+    }
 
     return reverse(result);
 }
 
 bool isGreaterOrEqualTo(std::vector<int> a, std::vector<int> b) {
     // is a >= b? return true if yes, false if not
-//    if ( a.size() > b.size() ) return true;
-//    else if ( a.size() < b.size() ) return false;
-//    else {
-        for ( int i = 0; i < a.size(); i++ ) {
-            if ( a.at(i) < b.at(i) ) return false;
-            if ( a.at(i) > b.at(i) ) return true;
-        }
-        return true;
-//    }
+
+    for ( int i = 0; i < a.size(); i++ ) {
+        if ( a.at(i) < b.at(i) ) return false;
+        if ( a.at(i) > b.at(i) ) return true;
+    }
+    return true;
 }
 
 
@@ -476,17 +453,16 @@ std::vector<int> dec2bin(int n){
     return result;
 }
 
-//not finished
+
 std::vector<int> mult(std::vector<int> a, std::vector<int> b){
-//    std::cout << "in mult" << std::endl;
     if(lessThan(a, b) && !equal(a, b)){
         return mult(b,a);
     }
     std::vector<int> multiply;
-    //    if(lessThan(b, a)){
+
     while(!zero(b)){
-//        if (isOne(a)) return b;
-//        if (isOne(b)) return a;
+
+
         if(!even(b)){
             std::vector<int> temp = multiply;
             multiply = add(temp, a);
@@ -496,67 +472,25 @@ std::vector<int> mult(std::vector<int> a, std::vector<int> b){
     }
     
     return multiply;
-    
-//    std::vector<int> multiply;
-//    if (zero(b)) {
-//        std::vector<int> zero;
-////        std::cout << "it's zero" << std::endl;
-//        return zero;
-//    }
-//    if (isOne(a)) return b;
-//    if (isOne(b)) return a;
-////    std::cout << "hitting mult again" << std::endl;
-//    multiply = mult(a, shiftRight(b));
-//    if (even(b)) {
-////        std::cout << "mult even" << std::endl;
-//        return add(multiply, multiply);
-//    }
-//    else {
-////        std::cout << "mult else" << std::endl;
-//        return add(a, add(multiply, multiply));
-//    }
-    
 }
 
 std::vector<int> aPowerB(std::vector<int> a, std::vector<int> b){
-//    std::cout << "aPowerB start" << std::endl;
     if(zero(b)){
         std::vector<int> one;
         one.push_back(1);
         return one;
     }
-//    else {
-//        std::vector<int> A1;
-//        std::vector<int> B1;
-////        std::cout << "aPower B before mult" << std::endl;
-//        A1 = mult(a, a);
-////        std::cout << "aPower B after mult" << std::endl;
-//        B1 = shiftRight(b);
-//        if (even(b)) {
-////            std::cout << "aPower B even" << std::endl;
-//            return aPowerB(A1, B1);
-//        }
-//        else {
-////            std::cout << "aPower B else" << std::endl;
-//            return mult(a, aPowerB(A1, B1));
-//        }
-//    }
     std::vector<int> z;
-//    std::cout << "aPowerB mid" << std::endl;
     z = aPowerB(a, shiftRight(b));
     if(even(b)){
-//        std::cout << "aPowerB even1" << std::endl;
         z = mult(z, z);
-//        std::cout << "aPowerB even2" << std::endl;
         return z;
     }
     else{
-//        std::cout << "aPowerB else" << std::endl;
         z = mult(z, z);
         z = mult(a, z);
         return z;
     }
-//    std::cout << "aPowerB end" << std::endl;
 }
 
 std::vector<int> mod(std::vector<int> a, std::vector<int> b) {
@@ -639,26 +573,15 @@ std::vector<int> trim(std::vector<int> vec) {
         trimmed = shiftRight(trimmed);
     }
     
-//    for (int i = trimmed.size() - 1; i > 0; i--) {
-//        if (trimmed.at(i) == 0)
-//            trimmed.pop_back();
-//    }
-//    std::cout << "inside trim" << std::endl;
     return reverse(trimmed);
 }
 
 bool isOne(std::vector<int> vec) {
     // Returns true if vec == 1, false otherwise
-    
     std::vector<int> one;
     one.push_back(1);
     
-//    std::cout << "inside isOne" << std::endl;
     return equal(trim(vec), one);
-//    return equal(vec, one);
-    
-//    if (Bin2Dec(vec) == "1") return true;
-//    return false;
 }
 
 std::vector<int> modexp(std::vector<int> x, std::vector<int> y, std::vector<int> N) {
@@ -692,15 +615,8 @@ bool primality2(std::vector<int> N, std::vector<std::vector<int> > aiVector) {
     
     std::vector<int> nMinusOne = subtractOne(N);
     
-//    std::cout << Bin2Dec(N) << Bin2Dec(nMinusOne) << std::endl;
     for (int i = 0; i < aiVector.size(); i++) {
         modulus = modexp(aiVector.at(i), nMinusOne, N);
-//        std::cout << Bin2Dec(aiVector.at(i)) << std::endl;
-//        exponent = aPowerB(aiVector.at(i), nMinusOne);
-//        modulus = mod(exponent, N);
-        
-//        std::cout << Bin2Dec(exponent) << " mod " << Bin2Dec(N) << " = " << Bin2Dec(modulus) << std::endl;
-//        std::cout << Bin2Dec(modulus) << std::endl;
         if ( !isOne(modulus) ) return false;
     }
     return true;
@@ -778,13 +694,6 @@ bool exc_or(bool a, bool b, bool c){
     return a^(b^c);
 }
 
-//bool nextCarry(bool a, bool b, bool c) {
-//    if ((a&b) | (b & c) | (c & a))
-//        return true;
-//    else
-//        return false;
-//}
-
 
 static std::vector<int> add(std::vector<int> x, std::vector<int> y, bool carry) {
     if (x.size() == 0) {
@@ -805,7 +714,7 @@ static std::vector<int> add(std::vector<int> x, std::vector<int> y, bool carry) 
     }
     else {
         std::vector<int> x1 = x;
-        x1.erase(x1.begin()); //////////////////////////////////
+        x1.erase(x1.begin());
         std::vector<int> y1 = y;
         y1.erase(y1.begin());
         bool newcarry = nextCarry(x[0], y[0], carry);
@@ -847,7 +756,6 @@ std::vector<int> longDec2Bin(std::string x)
 
 std::vector<int> randBinGenerator(int n) {
     std::vector<int> result;
-//    srand(time(NULL));
     result.push_back(1);
     
     for (int i = 0; i < n - 1; i++ ) {
@@ -879,16 +787,6 @@ std::vector<int> generatePrime(int n, int k) {
         aSubI.push_back(randBinGenerator(Bin2Dec(prime)));
     }
     
-    
-    // Test for primality:
-//    std::vector<int> three;
-//    three.push_back(1);
-//    three.push_back(1);
-//    
-//    while (!primality2(prime, aSubI) || isOne(mod(prime, three))) {
-//        prime = generatePrime(n, k);
-//    }
-//    return prime;
     std::vector<int> modulus;
     std::vector<int> three;
     three.push_back(1);
@@ -928,32 +826,17 @@ std::vector<int> getModInverse(RSAKey key) {
     modulus = mult(subtractOne(key.p), subtractOne(key.q));
     
     modInverse = extendedEuclid(e, modulus);
-//    std::cout << Bin2Dec(modInverse.x) << std::endl;
-//    std::cout << modInverse.sign << std::endl;
     
     if (modInverse.sign == 1) {
         result = shiftInverse(modInverse.x, mult(subtractOne(key.p), subtractOne(key.q)));
-//        std::cout << Bin2Dec(result) << std::endl;
-//        std::cout << Bin2Dec(shiftInverse2(result, modulus)) << std::endl;
-//        std::cout << "helloooo" << std::endl;
         test = mult(e, result);
         while(!isOne(mod(test, modulus))) {
             test = shiftInverse2(test, modulus);
-//            std::cout << "after 2" << std::endl; print(test);
         }
-//        result = test;
     }
     else {
         result = modInverse.x;
-//        std::cout << "inside if" << std::endl; print(result);
     }
-//    print(result);
-//    test = mult(e, result);
-//    
-//    while(!isOne(mod(test, modulus))) {
-//        test = shiftInverse2(test, modulus);
-//    }
-//    result = test;
     return result;
 }
 
@@ -1045,18 +928,8 @@ std::vector<int> randBinGenerator(std::string str){
 
 std::vector<int> rsaEncrypt(std::vector<int> message, std::vector<int> exponent, std::vector<int> N) {
     std::vector<int> result;
-//    std::cout << "test2" << std::endl;
-//    std::cout << Bin2Dec(message) << std::endl;
-//    std::cout << Bin2Dec(exponent) << std::endl;
-//    std::cout << Bin2Dec(N) << std::endl;
     
     result = modexp(message, exponent, N);
-//    std::cout << Bin2Dec(message) << std::endl;
-//    std::cout << Bin2Dec(exponent) << std::endl;
-//    result = mod( aPowerB(message, exponent), N);
-
-    
-    //    std::cout << "test3" << std::endl;
     return result;
 }
 
